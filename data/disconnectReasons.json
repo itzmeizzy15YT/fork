@@ -1,0 +1,270 @@
+{
+    "guardian": {
+        "main": {
+            "codeword": "Guardian",
+            "title": "disconnectionScreen.title.errorOccurred",
+            "body": "",
+            "weburl": "https://aka.ms/mcbedrock-help-error-guardian"
+        },
+        "sub": {
+            "sessionaccessdenied": {
+                "title": "disconnectionScreen.cantConnect"
+            },
+            "invalidplayer": {
+                "body": "disconnectionScreen.invalidPlayer"
+            },
+            "loggedinotherlocation": {
+                "title": "authentication.unableToConnect",
+                "body": "disconnectionScreen.body.loggedInElsewhere"
+            },
+            "notauthenticated": {
+                "body": "disconnectionScreen.notAuthenticated"
+            },
+            "loginpacketnorequest": {},
+            "loginpacketnocert": {},
+            "emptyauthfromdiscovery": {},
+            "expiredauthfromdiscovery": {},
+            "servicesigninissue": {},
+            "discoveryenvironmentmismatch": {
+                "body": "disconnectionScreen.body.discoveryMismatch"
+            },
+            "hostwithoutkeys": {
+                "body": "disconnectionScreen.body.hostWithoutKeys"
+            }
+        }
+    },
+    "kicked": {
+        "main": {
+            "codeword": "Evoker",
+            "title": "disconnectionScreen.title.kickedFromWorld",
+            "body": "",
+            "weburl": "https://aka.ms/mcbedrock-help-error-evoker"
+        },
+        "sub": {
+            "kicked": {
+                "body": "disconnect.kicked"
+            },
+            "kickedforexploit": {
+                "title": "disconnectionScreen.title.errorOccurred"
+            },
+            "kickedforidle": {
+                "title": "disconnectionScreen.title.disconnected",
+                "body": "disconnectionScreen.body.idleTooLong"
+            }
+        }
+    },
+    "packet": {
+        "main": {
+            "codeword": "Block",
+            "title": "disconnectionScreen.title.errorOccurred",
+            "body": "",
+            "weburl": "https://aka.ms/mcbedrock-help-error-block"
+        },
+        "sub": {
+            "worldtransfernotprimaryclient": {},
+            "unknownpacket": {},
+            "unexpectedpacket": {},
+            "invalidcommandrequestpacket": {},
+            "badpacket": {
+                "title": "disconnectionScreen.title.badPacket",
+                "body": "disconnectionScreen.badPacket"
+            }
+        }
+    },
+    "onetime": {
+        "main": {
+            "codeword": "Terracotta",
+            "title": "disconnectionScreen.title.errorOccurred",
+            "body": "",
+            "weburl": "https://aka.ms/mcbedrock-help-error-terracotta"
+        },
+        "sub": {
+            "thirdpartyblocked": {
+                "codeword": "Fox",
+                "title": "disconnectionScreen.cantConnect",
+                "body": "networkWorld.multiplayerPrivilegesUnknown",
+                "weburl": "https://aka.ms/mcbedrock-help-error-fox"
+            },
+            "thirdpartybadip": {
+                "codeword": "Squid",
+                "title": "disconnectionScreen.cantConnect",
+                "body": "disconnectionScreen.invalidIP",
+                "weburl": "https://aka.ms/mcbedrock-help-error-squid"
+            },
+            "thirdpartynoserverorserverlocked": {
+                "codeword": "Silverfish",
+                "title": "disconnectionScreen.cantConnect",
+                "body": "disconnectionScreen.body.serverNoneOrLocked",
+                "weburl": "https://aka.ms/mcbedrock-help-error-silverfish"
+            },
+            "localservernotfound": {
+                "codeword": "Panda",
+                "title": "disconnectionScreen.title.localServerNotFound",
+                "weburl": "https://aka.ms/mcbedrock-help-error-panda"
+            },
+            "sessionnotfound": {
+                "codeword": "Goat",
+                "title": "disconnectionScreen.cantConnect",
+                "body": "disconnectionScreen.body.worldNoLongerAvailable",
+                "weburl": "https://aka.ms/mcbedrock-help-error-goat"
+            },
+            "levelnewerthanexeversion": {
+                "codeword": "Breeze",
+                "body": "disconnectionScreen.body.worldNewerVersion",
+                "weburl": "https://aka.ms/mcbedrock-help-error-breeze"
+            },
+            "servernotfound": {
+                "codeword": "Clay",
+                "title": "disconnectionScreen.title.serverNotFound",
+                "body": "disconnectionScreen.body.cantConnectServer",
+                "weburl": "https://aka.ms/mcbedrock-help-error-clay"
+            },
+            "missingclient": {
+                "codeword": "Snowball",
+                "title": "disconnectionScreen.disconnected",
+                "body": "disconnectionScreen.body.cantFindClient",
+                "weburl": "https://aka.ms/mcbedrock-help-error-snowball"
+            },
+            "unspecifiedclientinstancedisconnection": {
+                "codeword": "Feather",
+                "weburl": "https://aka.ms/mcbedrock-help-error-feather"
+            },
+            "deeplinktryingtoopendemoworldwhilesignedin": {
+                "codeword": "Honeycomb",
+                "weburl": "https://aka.ms/mcbedrock-help-error-honeycomb"
+            },
+            "guestwithouthost": {
+                "codeword": "Bamboo",
+                "weburl": "https://aka.ms/mcbedrock-help-error-bamboo"
+            },
+            "disconnected": {
+                "codeword": "Bat",
+                "title": "disconnectionScreen.title.disconnectedFromHost",
+                "body": "disconnectionScreen.body.cantFindServer",
+                "weburl": "https://aka.ms/mcbedrock-help-error-bat"
+            },
+            "timeout": {
+                "codeword": "Kelp",
+                "title": "disconnectionScreen.title.connectionTimeout",
+                "weburl": "https://aka.ms/mcbedrock-help-error-kelp"
+            },
+            "subclientlogindisabled": {
+                "codeword": "Coal",
+                "weburl": "https://aka.ms/mcbedrock-help-error-coal"
+            },
+            "serverfull": {
+                "codeword": "Hopper",
+                "title": "disconnectionScreen.title.worldFull",
+                "weburl": "https://aka.ms/mcbedrock-help-error-hopper"
+            },
+            "invalidheights": {
+                "codeword": "Lead",
+                "weburl": "https://aka.ms/mcbedrock-help-error-lead"
+            },
+            "invalidwidths": {
+                "codeword": "Ladder",
+                "weburl": "https://aka.ms/mcbedrock-help-error-ladder"
+            },
+            "emptyurlfromdiscovery": {
+                "codeword": "TNT",
+                "weburl": "https://aka.ms/mcbedrock-help-error-tnt"
+            },
+            "failedtojoinexperience": {
+                "title": "disconnectionScreen.internalError.cantFindServer",
+                "body": "disconnectionScreen.internalError.cantConnect"
+            },
+            "connectionlost": {
+                "title": "disconnectionScreen.disconnected",
+                "body": "disconnectionScreen.connectionLost"
+            },
+            "hostsignedout": {
+                "title": "disconnectionScreen.disconnected",
+                "body": "disconnectionScreen.body.hostSignedOut"
+            },
+            "hostdisconnected": {
+                "codeword": "Goat",
+                "title": "disconnectionScreen.title.disconnectedFromHost",
+                "body": "disconnectionScreen.body.worldNoLongerActive",
+                "weburl": "https://aka.ms/mcbedrock-help-error-goat"
+            },
+            "scriptwatchdogexception": {
+                "body": "disconnect.scriptWatchdog"
+            },
+            "scriptmemorylimitexceeded": {
+                "body": "disconnect.scriptWatchdogOutOfMemory"
+            }
+        }
+    },
+    "permissions": {
+        "main": {
+            "codeword": "Spyglass",
+            "title": "disconnectionScreen.title.unableToConnect",
+            "body": "disconnectionScreen.body.permissionsDoNotAllow",
+            "weburl": "https://aka.ms/mcbedrock-help-error-spyglass"
+        },
+        "sub": {
+            "nopermissions": {},
+            "crossplatformdisabled": {
+                "body": "disconnectionScreen.crossPlatformDisabled"
+            },
+            "multiplayerdisabled": {
+                "title": "disconnectionScreen.title.multiplayerDisabled",
+                "body": ""
+            },
+            "notallowed": {
+                "body": "disconnectionScreen.notAllowed"
+            },
+            "denylisted": {
+                "title": "disconnectionScreen.title.bannedByHost",
+                "body": "disconnectionScreen.body.needsHostUnblock"
+            },
+            "noncemissing": {
+                "body": "disconnectionScreen.notAllowed"
+            },
+            "noncenotfound": {
+                "body": "disconnectionScreen.notAllowed"
+            },
+            "nonceexpired": {
+                "body": "disconnectionScreen.notAllowed"
+            },
+            "noncenotvalid": {
+                "body": "disconnectionScreen.notAllowed"
+            }
+        }
+    },
+    "versionmismatch": {
+        "main": {
+            "codeword": "Chain",
+            "title": "disconnectionScreen.title.versionMismatch",
+            "body": "disconnectionScreen.body.versionMismatchHost",
+            "weburl": "https://aka.ms/mcbedrock-help-error-chain"
+        },
+        "sub": {
+            "versionmismatch": {},
+            "editionversionmismatch": {
+                "title": "disconnectionScreen.title.versionMismatchHost",
+                "body": ""
+            },
+            "editionmismatch": {
+                "title": "disconnectionScreen.title.incompatibleWorld",
+                "body": "disconnectionScreen.editionMismatch"
+            },
+            "editionmismatchvanillatoedu": {
+                "title": "disconnectionScreen.title.incompatibleWorld",
+                "body": "disconnectionScreen.editionMismatchVanillaToEdu"
+            },
+            "editionmismatchedutovanilla": {
+                "title": "disconnectionScreen.title.incompatibleWorld",
+                "body": "disconnectionScreen.editionMismatchEduToVanilla"
+            },
+            "outdatedserver": {
+                "title": "authentication.unableToConnect",
+                "body": "disconnectionScreen.body.hostVersionOlder"
+            },
+            "outdatedclient": {
+                "title": "disconnectionScreen.title.versionOutOfDate",
+                "body": "disconnectionScreen.body.gameOutOfDate"
+            }
+        }
+    }
+}

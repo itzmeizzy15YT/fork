@@ -1,0 +1,66 @@
+const componentBuilder = require("../../classes/Component");
+const { guildID } = require("../../data/config.json");
+
+const { User } = require("../../functions/Database");
+
+const inCooldown = new Map() // userid, timeUntilReset
+
+module.exports = {
+    name: "interactionCreate",
+    async execute(interaction) {
+        if (!interaction.isCommand()) return;
+
+        let command =
+            interaction.client.commands.get(interaction.commandName) ||
+            interaction.client.commands.get(interaction.options.getSubcommand(false));
+
+        if (!command) return;
+        if (typeof User.findOne !== "function") return;
+
+        console.log(`[interaction] executed ${command.data.name} for ${interaction.user.tag} (${interaction.user.id}) ${interaction.guild ? `in ${interaction.guild.name}` : 'in DMs'}`);
+
+        const cooldown = inCooldown.get(interaction.user.id);
+        if (cooldown && Date.now() < cooldown) {
+            return interaction.reply({ content: `-# *Your on a cooldown from your previous command, cooldown reset <t:${Math.floor(cooldown / 1000)}:R>*`, flags: 64 });
+        }
+
+        inCooldown.set(interaction.user.id, (command?.cooldown ?? 5000) + Date.now());
+
+        const component = new componentBuilder();
+        const dbUser =
+            (await User.findOne({ id: interaction.user.id })) ||
+            new User({ id: interaction.user.id });
+
+        await dbUser.save();
+
+        for (const check of [
+            {
+                message: "### -# **This command is a crashing guild only command, please don't try to use it anywhere else!**",
+                condition: () => command.guildOnly && (!interaction.guild || interaction.guild.id !== guildID)
+            },
+            {
+                message: "### -# **This command is a staff only command, please don't try to use it!**",
+                condition: () => command.staffOnly && !dbUser.staff
+            },
+            {
+                message: "### -# **This command requires you to be linked, please use `/opt in` to link your account!**",
+                condition: () => command.linkOnly && !dbUser.linked
+            }
+        ]) {
+            if (check.condition()) return interaction.reply({ content: check.message, flags: 64 });
+        }
+
+        try {
+            await command.execute(interaction, { component, flags: [1 << 15], dbUser });
+            console.log(`[interaction] command finished for ${interaction.user.username} in ${Date.now() - interaction.createdTimestamp}ms`);
+        } catch (error) {
+            console.error(error);
+
+            if (interaction.deferred) {
+                await interaction.followUp({ content: "There was an error executing this command!", flags: [64] });
+            } else if (!interaction.replied) {
+                await interaction.reply({ content: "There was an error executing this command!", flags: [64] });
+            }
+        }
+    }
+};

@@ -1,0 +1,41 @@
+{
+    "appearanceObjects": [
+        {
+            "offlineUpdate":false,
+            "personaAppearance":{
+                "offlineUpdate":false,
+                "personaCollection":{
+                    "universalApp":[
+                        {
+                            "hasSeenPersonaClassicSkinDifferencesPrompt":true,
+                            "id":"c18e65aa-7b21-4637-9b63-8ad63622ef01_Noor",
+                            "isPlatformLocked":false,
+                            "isTitleLocked":false,
+                            "lastUsedPersonaSlot":"persona_profile_persona2",
+                            "packId":"c18e65aa-7b21-4637-9b63-8ad63622ef01",
+                            "stopShowingSkinChangePrompt":true,
+                            "typeId":"skin"
+                        }
+                    ]
+                },
+                "version":"0.1.0"
+            },
+            "personaCollection":{
+                "universalApp":[
+                    {
+                        "hasSeenPersonaClassicSkinDifferencesPrompt":true,
+                        "id":"c18e65aa-7b21-4637-9b63-8ad63622ef01_Steve",
+                        "isPlatformLocked":false,
+                        "isTitleLocked":false,
+                        "lastUsedPersonaSlot":"persona_profile_persona2",
+                        "packId":"c18e65aa-7b21-4637-9b63-8ad63622ef01",
+                        "stopShowingSkinChangePrompt":true,
+                        "typeId":"skin"
+                    }
+                ]
+            },
+            "profileName":"personaProfile",
+            "version":"0.1.0"
+        }
+    ]
+}
