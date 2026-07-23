@@ -1,4 +1,6 @@
-﻿const { generateRandomString, formatRealmApi } = require("../functions/Util.js");
+"use strict";
+
+const { generateRandomString, formatRealmApi } = require("../functions/Util.js");
 const XboxAPI = require("./Xbox.js");
 
 class realmAPI extends XboxAPI {
@@ -60,7 +62,6 @@ class realmAPI extends XboxAPI {
                     let realmID = this.realmID;
                     if (url.includes("/join")) {
                         realmID = url.match(/\/(\d+)\/join$/)?.[1]
-                        console.log("realmID", realmID)
                     }
                     const storySettingsResponse = await this.postStorySettings(realmID, true, true, true, true)
 
@@ -82,23 +83,21 @@ class realmAPI extends XboxAPI {
     }
 
     async getRealmInfo(realmCode, fast = true) {
-        let body;
-
         const response = await this.#req(`https://bedrock.frontendlegacy.realms.minecraft-services.net/worlds/v1/link/${realmCode}`, { method: "GET" }, "getRealmInfo");
         if (response.status !== 200) return response;
 
-        body = response.body;
+        let body = response.body;
         if (fast) return body;
 
-        if (!body?.member) await this.joinRealm(realmCode)
-
+        if (!body?.member) await this.joinRealm(realmCode);
         body = await this.getRealmInfoByID(body.id);
-
-        return body.body
+        return body;
     }
 
     async getRealmInfoByID(realmID) {
-        return await this.#req(`https://bedrock.frontendlegacy.realms.minecraft-services.net/worlds/${realmID}`, { method: "GET" }, "getRealmInfoByID")
+        const response = await this.#req(`https://bedrock.frontendlegacy.realms.minecraft-services.net/worlds/${realmID}`, { method: "GET" }, "getRealmInfoByID");
+        if (response.status !== 200) return response;
+        return response.body;
     }
 
     async getActivePlayers(realmID = null) {
@@ -106,7 +105,6 @@ class realmAPI extends XboxAPI {
         if (response.status !== 200 || !realmID) return response;
 
         response.body = response.body.servers.find((realm) => realm.id === Number(realmID))
-
         return response
     }
 
@@ -155,8 +153,8 @@ class realmAPI extends XboxAPI {
         if (!realm && !host) return;
         
         if (realm) {
-            if (typeof realm.status === "number") { // since we only return the body, this should never be a value in the start!
-                return { errorMsg: `${formatRealmApi[realm.body.errorCode] || realm.body.errorMsg} ${realm.body.errorCode}` };
+            if (typeof realm.status === "number") {
+                return { errorMsg: `${formatRealmApi[realm.body?.errorCode] || realm.body?.errorMsg} ${realm.body?.errorCode}` };
             }
 
             if (realm.body?.errorMsg) return { errorMsg: `${formatRealmApi[realm.body.errorCode] || realm.body.errorMsg} ${realm.body.errorCode}` };
@@ -166,7 +164,7 @@ class realmAPI extends XboxAPI {
         }
 
         if (host) {
-            if (host.status !== 200) return { errorMsg: `${host.body.errorMsg} ${host.body.errorCode}` };
+            if (host.status !== 200) return { errorMsg: `${host.body?.errorMsg} ${host.body?.errorCode}` };
             if (!host.body || typeof host.body.networkProtocol !== "string") return { errorMsg: "The realm networking Protocol wasnt a string, or was invalid, please try again later! 403" };
             
             if (!["NETHERNET", "DEFAULT", "NETHERNET_JSONRPC"].includes(host.body.networkProtocol)) return { errorMsg: "This realm is using a unsupported type of protocol. 501" };
